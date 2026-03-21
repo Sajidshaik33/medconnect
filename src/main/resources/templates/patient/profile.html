@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedConnect — My Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/css/responsive.css" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f1f5f9; }
+        .sidebar {
+            width: 260px; min-height: 100vh;
+            background: #0a2540;
+            position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        .sidebar-brand { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-brand-name { color: white; font-weight: 800; font-size: 1.1rem; }
+        .sidebar-section { padding: 20px 12px 8px; }
+        .sidebar-section-label { color: #64748b; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 0 8px; margin-bottom: 6px; }
+        .nav-link { color: #94a3b8 !important; padding: 10px 12px !important; border-radius: 10px; margin-bottom: 2px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+        .nav-link:hover { background: rgba(255,255,255,0.06) !important; color: white !important; }
+        .nav-link.active { background: rgba(26,86,219,0.3) !important; color: #60a5fa !important; }
+        .nav-link .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .main-content { margin-left: 260px; padding: 24px; }
+        .topbar { background: white; border-radius: 14px; padding: 16px 24px; box-shadow: 0 1px 10px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .profile-card { background: white; border-radius: 14px; box-shadow: 0 1px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .profile-header {
+            background: linear-gradient(135deg, #0a2540, #1a56db);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+        .profile-avatar {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 42px; font-weight: 800;
+            margin: 0 auto 16px;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+        .profile-body { padding: 32px; }
+        .form-label { font-weight: 500; font-size: 14px; color: #374151; margin-bottom: 6px; }
+        .form-control, .form-select {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 11px 16px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #1a56db;
+            box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+        }
+        .btn-save {
+            background: linear-gradient(135deg, #1a56db, #0ea5e9);
+            border: none; border-radius: 10px;
+            padding: 12px 32px;
+            font-weight: 600; font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,86,219,0.3); }
+        .info-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 14px; border-radius: 50px;
+            font-size: 13px; margin: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-brand d-flex align-items-center gap-2">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#1a56db,#0ea5e9);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;">
+            <i class="fas fa-heartbeat" style="font-size:16px;"></i>
+        </div>
+        <span class="sidebar-brand-name">MedConnect</span>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-section-label">Main Menu</div>
+        <a th:href="@{/patient/dashboard}" class="nav-link">
+            <span class="icon"><i class="fas fa-home"></i></span>Dashboard
+        </a>
+        <a th:href="@{/patient/book-appointment}" class="nav-link">
+            <span class="icon"><i class="fas fa-calendar-plus"></i></span>Book Appointment
+        </a>
+        <a th:href="@{/patient/appointments}" class="nav-link">
+            <span class="icon"><i class="fas fa-calendar-check"></i></span>My Appointments
+        </a>
+        <a th:href="@{/patient/prescriptions}" class="nav-link">
+            <span class="icon"><i class="fas fa-prescription-bottle-alt"></i></span>Prescriptions
+        </a>
+        <a th:href="@{/patient/rate-doctor}" class="nav-link">
+            <span class="icon"><i class="fas fa-star"></i></span>Rate Doctor
+        </a>
+        <a th:href="@{/patient/profile}" class="nav-link active">
+            <span class="icon"><i class="fas fa-user"></i></span>My Profile
+        </a>
+    </div>
+    <div style="position:absolute;bottom:0;width:100%;padding:16px 12px;">
+        <a th:href="@{/logout}" class="nav-link" style="color:#ef4444!important;">
+            <span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0" style="color:#0a2540;">My Profile</h5>
+            <p class="text-muted mb-0" style="font-size:13px;">
+                View and update your personal information
+            </p>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${param.updated}"
+         class="alert alert-success d-flex align-items-center gap-2 mb-4"
+         style="border-radius:12px;border:none;background:#d1fae5;color:#059669;">
+        <i class="fas fa-check-circle"></i>
+        Profile updated successfully!
+    </div>
+
+    <div class="profile-card">
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar"
+                 th:text="${user != null ? user.name.substring(0,1).toUpperCase() : 'P'}">
+            </div>
+            <h4 class="fw-bold mb-1" th:text="${user != null ? user.name : 'Patient'}"></h4>
+            <p class="mb-2" style="opacity:0.8;" th:text="${user != null ? user.email : ''}"></p>
+            <div>
+                <span class="info-badge">
+                    <i class="fas fa-user"></i> Patient
+                </span>
+                <span class="info-badge" th:if="${patient != null && patient.bloodGroup != null}">
+                    <i class="fas fa-tint"></i>
+                    <span th:text="${patient.bloodGroup}"></span>
+                </span>
+                <span class="info-badge" th:if="${patient != null && patient.gender != null}">
+                    <i class="fas fa-venus-mars"></i>
+                    <span th:text="${patient.gender}"></span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Profile Form -->
+        <div class="profile-body">
+            <form th:action="@{/patient/profile}"
+                  th:object="${patient}"
+                  method="post">
+
+                <h6 class="fw-bold mb-4" style="color:#0a2540;font-size:16px;">
+                    <i class="fas fa-user-edit text-primary me-2"></i>
+                    Personal Information
+                </h6>
+
+                <div class="row g-4">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-user text-primary me-1"></i>
+                            Full Name
+                        </label>
+                        <input type="text" name="name" class="form-control"
+                               th:value="${user != null ? user.name : ''}"
+                               placeholder="Your full name" required>
+                    </div>
+
+                    <!-- Email (Read only) -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-envelope text-primary me-1"></i>
+                            Email Address
+                        </label>
+                        <input type="email" class="form-control"
+                               th:value="${user != null ? user.email : ''}"
+                               disabled
+                               style="background:#f8fafc;color:#64748b;">
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-phone text-primary me-1"></i>
+                            Phone Number
+                        </label>
+                        <input type="text" th:field="*{phone}"
+                               class="form-control"
+                               placeholder="Your phone number">
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-calendar text-primary me-1"></i>
+                            Date of Birth
+                        </label>
+                        <input type="text" th:field="*{dob}"
+                               class="form-control"
+                               placeholder="DD/MM/YYYY">
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-venus-mars text-primary me-1"></i>
+                            Gender
+                        </label>
+                        <select th:field="*{gender}" class="form-select">
+                            <option value="">— Select Gender —</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Blood Group -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-tint text-primary me-1"></i>
+                            Blood Group
+                        </label>
+                        <select th:field="*{bloodGroup}" class="form-select">
+                            <option value="">— Select Blood Group —</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-12">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt text-primary me-1"></i>
+                            Address
+                        </label>
+                        <textarea th:field="*{address}"
+                                  class="form-control" rows="3"
+                                  placeholder="Your full address">
+                        </textarea>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="col-12 pt-2">
+                        <button type="submit"
+                                class="btn btn-primary btn-save text-white">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                        <a th:href="@{/patient/dashboard}"
+                           class="btn btn-light ms-2"
+                           style="border-radius:10px;padding:12px 24px;font-weight:600;">
+                            Cancel
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

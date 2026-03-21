@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedConnect — Healthcare & Appointment System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="/css/responsive.css" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .navbar { background: white; box-shadow: 0 1px 20px rgba(0,0,0,0.08); padding: 16px 0; }
+        .navbar-brand { font-weight: 800; font-size: 1.4rem; color: #0a2540 !important; }
+        .hero {
+            background: linear-gradient(145deg, #0a2540 0%, #1a56db 60%, #0ea5e9 100%);
+            padding: 100px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            top: -200px; right: -100px;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            bottom: -150px; left: -100px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px; border-radius: 50px;
+            font-size: 13px; margin-bottom: 24px;
+        }
+        .hero h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.2; }
+        .hero-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 24px;
+        }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 2rem; font-weight: 800; }
+        .stat-label { font-size: 13px; opacity: 0.8; }
+        .btn-hero-primary {
+            background: white;
+            color: #1a56db;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            color: #1a56db;
+        }
+        .btn-hero-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .btn-hero-outline:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: white;
+        }
+        .feature-card {
+            border-radius: 16px;
+            border: 1.5px solid #e5e7eb;
+            padding: 32px;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-color: #1a56db;
+        }
+        .feature-icon {
+            width: 60px; height: 60px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+        .steps-section { background: #f8fafc; }
+        .step-circle {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a56db, #0ea5e9);
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 auto 16px;
+        }
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+        .avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .footer { background: #0a2540; color: #94a3b8; padding: 50px 0 30px; }
+        .footer-brand { color: white; font-weight: 800; font-size: 1.3rem; }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-heartbeat text-primary me-2"></i>MedConnect
+        </a>
+        <div class="ms-auto d-flex gap-2">
+            <a th:href="@{/login}" class="btn btn-outline-primary" style="border-radius:10px;padding:8px 20px;font-weight:600;">
+                Sign In
+            </a>
+            <a th:href="@{/register}" class="btn btn-primary" style="border-radius:10px;padding:8px 20px;font-weight:600;">
+                Get Started
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container position-relative" style="z-index:1;">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <i class="fas fa-shield-alt"></i> Trusted Healthcare Platform
+                </div>
+                <h1>Modern Healthcare at Your <span style="color:#7dd3fc;">Fingertips</span></h1>
+                <p class="mt-3 mb-4" style="font-size:17px;opacity:0.85;max-width:480px;">
+                    Book appointments, manage prescriptions, and access your medical records — all in one secure platform.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a th:href="@{/register}" class="btn btn-hero-primary">
+                        <i class="fas fa-user-plus me-2"></i>Create Free Account
+                    </a>
+                    <a th:href="@{/login}" class="btn btn-hero-outline">
+                        Sign In <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 offset-lg-1 mt-5 mt-lg-0">
+                <div class="hero-card">
+                    <div class="row g-4">
+                        <div class="col-4 stat-item">
+                            <div class="stat-num">500+</div>
+                            <div class="stat-label">Doctors</div>
+                        </div>
+                        <div class="col-4 stat-item">
+                            <div class="stat-num">10K+</div>
+                            <div class="stat-label">Patients</div>
+                        </div>
+                        <div class="col-4 stat-item">
+                            <div class="stat-num">50K+</div>
+                            <div class="stat-label">Appointments</div>
+                        </div>
+                    </div>
+                    <hr style="border-color:rgba(255,255,255,0.2);margin:20px 0;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="display:flex;">
+                            <div class="avatar" style="background:#10b981;width:36px;height:36px;font-size:14px;margin-right:-8px;border:2px solid rgba(255,255,255,0.3);">J</div>
+                            <div class="avatar" style="background:#f59e0b;width:36px;height:36px;font-size:14px;margin-right:-8px;border:2px solid rgba(255,255,255,0.3);">S</div>
+                            <div class="avatar" style="background:#ef4444;width:36px;height:36px;font-size:14px;border:2px solid rgba(255,255,255,0.3);">R</div>
+                        </div>
+                        <div style="font-size:13px;opacity:0.85;">Join thousands of satisfied patients</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="py-5 py-lg-6" style="padding-top:80px!important;padding-bottom:80px!important;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3" style="font-size:13px;">Features</span>
+            <h2 class="fw-bold" style="font-size:2.2rem;color:#0a2540;">Everything you need</h2>
+            <p class="text-muted" style="max-width:500px;margin:0 auto;">A complete healthcare ecosystem designed for patients, doctors, and administrators.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#eff6ff;">
+                        <i class="fas fa-calendar-check text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Smart Scheduling</h5>
+                    <p class="text-muted" style="font-size:14px;">Book, reschedule, or cancel appointments in seconds with real-time availability.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#f0fdf4;">
+                        <i class="fas fa-file-prescription text-success"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Digital Prescriptions</h5>
+                    <p class="text-muted" style="font-size:14px;">Doctors issue digital prescriptions instantly. Patients access them anytime, anywhere.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#fff7ed;">
+                        <i class="fas fa-notes-medical" style="color:#f97316;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Medical History</h5>
+                    <p class="text-muted" style="font-size:14px;">Complete medical records, lab reports, and treatment history in one secure place.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#fdf4ff;">
+                        <i class="fas fa-user-md" style="color:#a855f7;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Expert Doctors</h5>
+                    <p class="text-muted" style="font-size:14px;">Browse verified specialists across cardiology, neurology, orthopedics, and more.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#fff1f2;">
+                        <i class="fas fa-shield-alt" style="color:#ef4444;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Secure & Private</h5>
+                    <p class="text-muted" style="font-size:14px;">Your health data is encrypted and protected with enterprise-grade security.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background:#f0fdfa;">
+                        <i class="fas fa-tachometer-alt" style="color:#0d9488;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Admin Dashboard</h5>
+                    <p class="text-muted" style="font-size:14px;">Powerful tools for hospital administrators to manage staff, patients, and reports.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="steps-section py-5" style="padding-top:80px!important;padding-bottom:80px!important;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-3" style="font-size:13px;">How It Works</span>
+            <h2 class="fw-bold" style="font-size:2.2rem;color:#0a2540;">Get started in 3 steps</h2>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="step-circle">1</div>
+                <h5 class="fw-bold mb-2">Create Account</h5>
+                <p class="text-muted" style="font-size:14px;">Register as a patient or doctor in under 2 minutes.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="step-circle">2</div>
+                <h5 class="fw-bold mb-2">Find Your Doctor</h5>
+                <p class="text-muted" style="font-size:14px;">Browse specialists and choose the right doctor for you.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="step-circle">3</div>
+                <h5 class="fw-bold mb-2">Book & Manage</h5>
+                <p class="text-muted" style="font-size:14px;">Schedule appointments and manage your health journey.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,#0a2540,#1a56db);padding:80px 0;color:white;">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3" style="font-size:2.2rem;">Ready to get started?</h2>
+        <p class="mb-4" style="font-size:17px;opacity:0.85;">Join MedConnect today and take control of your healthcare.</p>
+        <a th:href="@{/register}" class="btn btn-hero-primary btn-lg px-5">
+            <i class="fas fa-user-plus me-2"></i>Create Free Account
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="footer-brand mb-3">
+                    <i class="fas fa-heartbeat text-primary me-2"></i>MedConnect
+                </div>
+                <p style="font-size:14px;">Your trusted healthcare and appointment management platform.</p>
+            </div>
+            <div class="col-md-2 offset-md-2">
+                <h6 class="text-white fw-600 mb-3">Platform</h6>
+                <ul class="list-unstyled" style="font-size:14px;">
+                    <li class="mb-2"><a th:href="@{/login}" class="text-decoration-none" style="color:#94a3b8;">Login</a></li>
+                    <li class="mb-2"><a th:href="@{/register}" class="text-decoration-none" style="color:#94a3b8;">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-white fw-600 mb-3">Roles</h6>
+                <ul class="list-unstyled" style="font-size:14px;">
+                    <li class="mb-2" style="color:#94a3b8;">Patient</li>
+                    <li class="mb-2" style="color:#94a3b8;">Doctor</li>
+                    <li class="mb-2" style="color:#94a3b8;">Admin</li>
+                </ul>
+            </div>
+        </div>
+        <hr style="border-color:rgba(255,255,255,0.1);">
+        <p class="text-center mb-0" style="font-size:13px;">
+            &copy; 2024 MedConnect. All rights reserved. Built with <i class="fas fa-heart text-danger mx-1"></i> for better healthcare.
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

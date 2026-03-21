@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedConnect — Find Doctors</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/css/responsive.css" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f1f5f9; }
+        .sidebar { width: 260px; min-height: 100vh; background: #0a2540; position: fixed; top: 0; left: 0; z-index: 100; }
+        .sidebar-brand { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-brand-name { color: white; font-weight: 800; font-size: 1.1rem; }
+        .sidebar-section { padding: 20px 12px 8px; }
+        .sidebar-section-label { color: #64748b; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 0 8px; margin-bottom: 6px; }
+        .nav-link { color: #94a3b8 !important; padding: 10px 12px !important; border-radius: 10px; margin-bottom: 2px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+        .nav-link:hover { background: rgba(255,255,255,0.06) !important; color: white !important; }
+        .nav-link.active { background: rgba(26,86,219,0.3) !important; color: #60a5fa !important; }
+        .nav-link .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .main-content { margin-left: 260px; padding: 24px; }
+        .topbar { background: white; border-radius: 14px; padding: 16px 24px; box-shadow: 0 1px 10px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .search-box { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 1px 10px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .search-input { border: 2px solid #e5e7eb; border-radius: 12px; padding: 14px 20px; font-size: 15px; transition: all 0.2s; }
+        .search-input:focus { border-color: #1a56db; box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+        .btn-search { background: linear-gradient(135deg, #1a56db, #0ea5e9); border: none; border-radius: 12px; padding: 14px 28px; font-weight: 600; font-size: 15px; transition: all 0.3s; }
+        .btn-search:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,86,219,0.3); }
+        .doctor-card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 1px 10px rgba(0,0,0,0.05); transition: all 0.3s; border: 1.5px solid #e5e7eb; height: 100%; }
+        .doctor-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); border-color: #1a56db; }
+        .doctor-avatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #34d399); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: white; margin: 0 auto 16px; }
+        .spec-badge { background: #eff6ff; color: #1a56db; padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; }
+        .info-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b; margin-bottom: 8px; }
+        .btn-book { background: linear-gradient(135deg, #1a56db, #0ea5e9); border: none; border-radius: 10px; padding: 10px 20px; font-weight: 600; font-size: 13px; width: 100%; transition: all 0.3s; }
+        .btn-book:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(26,86,219,0.3); }
+        .rating-badge { background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-brand d-flex align-items-center gap-2">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#1a56db,#0ea5e9);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;">
+            <i class="fas fa-heartbeat" style="font-size:16px;"></i>
+        </div>
+        <span class="sidebar-brand-name">MedConnect</span>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-section-label">Main Menu</div>
+        <a th:href="@{/patient/dashboard}" class="nav-link">
+            <span class="icon"><i class="fas fa-home"></i></span>Dashboard
+        </a>
+        <a th:href="@{/patient/book-appointment}" class="nav-link">
+            <span class="icon"><i class="fas fa-calendar-plus"></i></span>Book Appointment
+        </a>
+        <a th:href="@{/patient/appointments}" class="nav-link">
+            <span class="icon"><i class="fas fa-calendar-check"></i></span>My Appointments
+        </a>
+        <a th:href="@{/patient/prescriptions}" class="nav-link">
+            <span class="icon"><i class="fas fa-prescription-bottle-alt"></i></span>Prescriptions
+        </a>
+        <a th:href="@{/patient/search-doctors}" class="nav-link active">
+            <span class="icon"><i class="fas fa-search"></i></span>Find Doctors
+        </a>
+        <a th:href="@{/patient/rate-doctor}" class="nav-link">
+            <span class="icon"><i class="fas fa-star"></i></span>Rate Doctor
+        </a>
+        <a th:href="@{/patient/profile}" class="nav-link">
+            <span class="icon"><i class="fas fa-user"></i></span>My Profile
+        </a>
+    </div>
+    <div style="position:absolute;bottom:0;width:100%;padding:16px 12px;">
+        <a th:href="@{/logout}" class="nav-link" style="color:#ef4444!important;">
+            <span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout
+        </a>
+    </div>
+</div>
+
+<div class="main-content">
+
+    <div class="topbar d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0" style="color:#0a2540;">Find Doctors</h5>
+            <p class="text-muted mb-0" style="font-size:13px;">Search by name or specialization</p>
+        </div>
+    </div>
+
+    <div class="search-box">
+        <form th:action="@{/patient/search-doctors}" method="get">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"
+                              style="border:2px solid #e5e7eb;border-right:none;border-radius:12px 0 0 12px;">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" name="keyword"
+                               class="form-control search-input"
+                               th:value="${keyword}"
+                               placeholder="Search by doctor name or specialization..."
+                               style="border-left:none;border-radius:0 12px 12px 0;">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit"
+                            class="btn btn-primary btn-search text-white w-100">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${keyword != null}" class="mb-3">
+        <p class="text-muted" style="font-size:14px;">
+            <i class="fas fa-info-circle me-1"></i>
+            Showing results for: <strong th:text="${keyword}"></strong>
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4" th:each="doctor : ${doctors}">
+            <div class="doctor-card text-center">
+                <div class="doctor-avatar"
+                     th:text="${doctor.user != null ? doctor.user.name.substring(0,1).toUpperCase() : 'D'}">
+                </div>
+                <h6 class="fw-bold mb-1"
+                    th:text="${doctor.user != null ? doctor.user.name : 'N/A'}">
+                </h6>
+                <div class="mb-2">
+                    <span class="spec-badge" th:text="${doctor.specialization}"></span>
+                </div>
+
+                <!-- Rating -->
+                <div class="mb-3">
+                    <span class="rating-badge">
+                        <i class="fas fa-star"></i>
+                        <span th:text="${ratings != null and ratings.get(doctor.id) != null ? #numbers.formatDecimal(ratings.get(doctor.id), 1, 1) : '0.0'}"></span>
+                    </span>
+                    <span class="text-muted ms-1" style="font-size:12px;"
+                          th:text="${'(' + (reviewCounts != null and reviewCounts.get(doctor.id) != null ? reviewCounts.get(doctor.id) : 0) + ' reviews)'}">
+                    </span>
+                </div>
+
+                <div class="text-start mb-3">
+                    <div class="info-row">
+                        <i class="fas fa-graduation-cap text-primary"></i>
+                        <span th:text="${doctor.qualification}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-briefcase text-primary"></i>
+                        <span th:text="${doctor.experience + ' years experience'}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-rupee-sign text-primary"></i>
+                        <span th:text="${'Consultation: ₹' + doctor.fees}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-calendar text-primary"></i>
+                        <span th:text="${doctor.availableDays != null ? doctor.availableDays : 'Mon-Sat'}"></span>
+                    </div>
+                </div>
+
+                <a th:href="@{/patient/book-appointment}"
+                   class="btn btn-primary btn-book text-white">
+                    <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+                </a>
+            </div>
+        </div>
+
+        <div class="col-12" th:if="${doctors == null or doctors.empty}">
+            <div class="text-center py-5" style="background:white;border-radius:14px;">
+                <i class="fas fa-user-md fa-3x text-muted mb-3 d-block"></i>
+                <div class="fw-bold text-muted">No doctors found</div>
+                <div class="text-muted" style="font-size:13px;">
+                    Try a different search keyword
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
