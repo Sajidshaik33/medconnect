@@ -20,21 +20,29 @@ public class AppointmentService {
 
     public Appointment saveAppointment(Appointment appointment) {
         Appointment saved = appointmentRepository.save(appointment);
+
         // Notify patient
-        if (saved.getPatient() != null) {
+        if (saved.getPatient() != null && 
+            saved.getPatient().getUser() != null) {
+            String doctorName = (saved.getDoctor() != null &&
+                                saved.getDoctor().getUser() != null) ?
+                                saved.getDoctor().getUser().getName() : "Doctor";
             notificationService.createNotification(
                 saved.getPatient().getUser(),
-                "Your appointment has been booked successfully with Dr. " +
-                (saved.getDoctor() != null ? saved.getDoctor().getUser().getName() : ""),
+                "Your appointment has been booked successfully with Dr. " + doctorName,
                 "APPOINTMENT_BOOKED"
             );
         }
+
         // Notify doctor
-        if (saved.getDoctor() != null) {
+        if (saved.getDoctor() != null && 
+            saved.getDoctor().getUser() != null) {
+            String patientName = (saved.getPatient() != null &&
+                                 saved.getPatient().getUser() != null) ?
+                                 saved.getPatient().getUser().getName() : "Patient";
             notificationService.createNotification(
                 saved.getDoctor().getUser(),
-                "New appointment request from " +
-                (saved.getPatient() != null ? saved.getPatient().getUser().getName() : ""),
+                "New appointment request from " + patientName,
                 "NEW_APPOINTMENT"
             );
         }
@@ -69,17 +77,20 @@ public class AppointmentService {
 
         // Notifications based on status
         if (status == Appointment.Status.CONFIRMED) {
-            if (updated.getPatient() != null) {
+            if (updated.getPatient() != null &&
+                updated.getPatient().getUser() != null) {
+                String doctorName = (updated.getDoctor() != null &&
+                                    updated.getDoctor().getUser() != null) ?
+                                    updated.getDoctor().getUser().getName() : "Doctor";
                 notificationService.createNotification(
                     updated.getPatient().getUser(),
-                    "Your appointment with Dr. " +
-                    (updated.getDoctor() != null ? updated.getDoctor().getUser().getName() : "") +
-                    " has been CONFIRMED!",
+                    "Your appointment with Dr. " + doctorName + " has been CONFIRMED!",
                     "APPOINTMENT_CONFIRMED"
                 );
             }
         } else if (status == Appointment.Status.CANCELLED) {
-            if (updated.getPatient() != null) {
+            if (updated.getPatient() != null &&
+                updated.getPatient().getUser() != null) {
                 notificationService.createNotification(
                     updated.getPatient().getUser(),
                     "Your appointment has been cancelled.",
@@ -87,7 +98,8 @@ public class AppointmentService {
                 );
             }
         } else if (status == Appointment.Status.COMPLETED) {
-            if (updated.getPatient() != null) {
+            if (updated.getPatient() != null &&
+                updated.getPatient().getUser() != null) {
                 notificationService.createNotification(
                     updated.getPatient().getUser(),
                     "Your appointment has been completed. Please rate your doctor!",
