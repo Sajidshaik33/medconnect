@@ -78,6 +78,14 @@
         </div>
     </div>
 
+    <!-- Error Message -->
+    <div th:if="${error}"
+         class="alert mb-4"
+         style="border-radius:12px;border:none;background:#fee2e2;color:#dc2626;padding:16px;">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+    </div>
+
     <div class="form-card">
         <div class="form-card-header">
             <h6 class="fw-bold mb-0" style="color:#0a2540;">

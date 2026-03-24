@@ -1,6 +1,7 @@
 package com.medconnect.controller;
 
 import com.medconnect.model.*;
+import com.medconnect.repository.AppointmentRepository;
 import com.medconnect.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ public class PatientController {
     @Autowired private DoctorService doctorService;
     @Autowired private PrescriptionService prescriptionService;
     @Autowired private RatingService ratingService;
+    @Autowired private AppointmentRepository appointmentRepository;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication auth) {
@@ -72,7 +74,8 @@ public class PatientController {
     @PostMapping("/book-appointment")
     public String bookAppointmentSubmit(
             @ModelAttribute Appointment appointment,
-            Authentication auth) {
+            Authentication auth,
+            Model model) {
         User user = userService.findByEmail(auth.getName()).orElse(null);
         if (user != null) {
             Patient patient = patientService.findByUser(user).orElse(null);
@@ -81,6 +84,27 @@ public class PatientController {
                 patient.setUser(user);
                 patientService.savePatient(patient);
             }
+
+            // Check duplicate booking
+            Doctor doctor = doctorService.findById(
+                appointment.getDoctor().getId()).orElse(null);
+
+            boolean slotTaken = appointmentRepository
+                .existsByDoctorAndApptDateAndTimeSlotAndStatusNot(
+                    doctor,
+                    appointment.getApptDate(),
+                    appointment.getTimeSlot(),
+                    Appointment.Status.CANCELLED
+                );
+
+            if (slotTaken) {
+                model.addAttribute("doctors", doctorService.getAllDoctors());
+                model.addAttribute("appointment", appointment);
+                model.addAttribute("error",
+                    "This time slot is already booked! Please select another slot.");
+                return "patient/book-appointment";
+            }
+
             appointment.setPatient(patient);
             appointment.setStatus(Appointment.Status.PENDING);
             appointmentService.saveAppointment(appointment);
@@ -163,17 +187,17 @@ public class PatientController {
             @RequestParam(required = false) String keyword,
             Model model) {
         List<Doctor> doctors = doctorService.getAllDoctors();
-        
+
         if (keyword != null && !keyword.isEmpty()) {
             doctors = doctorService.searchDoctors(keyword);
             model.addAttribute("keyword", keyword);
         }
-        
+
         model.addAttribute("doctors", doctors);
 
         Map<Long, Double> ratings = new HashMap<>();
         Map<Long, Integer> reviewCounts = new HashMap<>();
-        
+
         for (Doctor doctor : doctors) {
             try {
                 ratings.put(doctor.getId(),
@@ -185,12 +209,13 @@ public class PatientController {
                 reviewCounts.put(doctor.getId(), 0);
             }
         }
-        
+
         model.addAttribute("ratings", ratings);
         model.addAttribute("reviewCounts", reviewCounts);
 
         return "patient/search-doctors";
     }
+
     @GetMapping("/rate-doctor")
     public String rateDoctorPage(Model model, Authentication auth) {
         User user = userService.findByEmail(auth.getName()).orElse(null);
